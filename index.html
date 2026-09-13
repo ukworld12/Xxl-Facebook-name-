@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XXL Names</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #08080c;
+    color: #fff;
+}
+
+header {
+    text-align: center;
+    padding: 22px 15px;
+    background: linear-gradient(135deg, #ff0066, #7b00ff);
+    box-shadow: 0 4px 20px rgba(0,0,0,.4);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+header p {
+    margin: 7px 0 0;
+    opacity: .9;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+    padding: 15px;
+}
+
+/* NAME CARD */
+
+.name-card {
+    background: linear-gradient(145deg, #17171f, #24242f);
+    border: 1px solid #353541;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.25);
+}
+
+.name-text {
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    word-break: break-word;
+}
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    flex: 1;
+    border: none;
+    padding: 12px 8px;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.change-btn {
+    background: linear-gradient(135deg, #ff0066, #ff4b2b);
+}
+
+.copy-btn {
+    background: linear-gradient(135deg, #0066ff, #00aaff);
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+/* PAGINATION */
+
+.pagination {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.page-btn {
+    flex: 1;
+    background: #292934;
+    border: 1px solid #444451;
+}
+
+.page-info {
+    text-align: center;
+    padding: 13px;
+    margin-top: 10px;
+    color: #aaa;
+    font-size: 14px;
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%) translateY(80px);
+    background: #20c76a;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    opacity: 0;
+    transition: .3s;
+    z-index: 9999;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* MOBILE */
+
+@media(max-width:500px) {
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    .name-text {
+        font-size: 19px;
+    }
+
+    button {
+        font-size: 13px;
+        padding: 11px 5px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🔥 XXL Names 🔥</h1>
+    <p>5 Names Per Page</p>
+</header>
+
+<div class="container">
+
+    <div id="names"></div>
+
+    <div class="pagination">
+        <button class="page-btn" onclick="previousPage()">⬅ PREVIOUS</button>
+        <button class="page-btn" onclick="nextPage()">NEXT ➡</button>
+    </div>
+
+    <div class="page-info" id="pageInfo"></div>
+
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+
+/* =========================================
+   200 NAMES
+========================================= */
+
+const names = [
+"Pooja",
+"Komal",
+"Sonia",
+"Priya",
+"Neha",
+"Simran",
+"Anjali",
+"Kajal",
+"Riya",
+"Payal",
+"Shweta",
+"Divya",
+"Rani",
+"Muskan",
+"Preeti",
+"Deepika",
+"Sonam",
+"Rashmi",
+"Jyoti",
+"Ankita",
+"Manisha",
+"Monika",
+"Swati",
+"Meena",
+"Rekha",
+"Seema",
+"Shivani",
+"Tanvi",
+"Khushi",
+"Kirti",
+"Ritu",
+"Nisha",
+"Neelam",
+"Aarti",
+"Bhavna",
+"Chandni",
+"Diksha",
+"Isha",
+"Jiya",
+"Kiran",
+"Lakshmi",
+"Mahi",
+"Mamta",
+"Mehak",
+"Mona",
+"Nandini",
+"Navya",
+"Nikita",
+"Palak",
+"Pari",
+"Pallavi",
+"Prachi",
+"Radhika",
+"Rakhi",
+"Raveena",
+"Renuka",
+"Roshni",
+"Sakshi",
+"Saloni",
+"Samira",
+"Sandhya",
+"Sangeeta",
+"Sapna",
+"Sara",
+"Sarika",
+"Shalini",
+"Shanaya",
+"Shraddha",
+"Smita",
+"Sneha",
+"Sonali",
+"Sonika",
+"Soumya",
+"Supriya",
+"Surabhi",
+"Sushma",
+"Swara",
+"Tanya",
+"Tara",
+"Trisha",
+"Twinkle",
+"Uma",
+"Vaishali",
+"Vandana",
+"Varsha",
+"Vidhi",
+"Vini",
+"Yamini",
+"Zara",
+"Ayesha",
+"Alisha",
+"Amisha",
+"Amrita",
+"Anamika",
+"Anaya",
+"Anushka",
+"Arpita",
+"Avantika",
+"Bharti",
+"Charu",
+"Damini",
+"Diya",
+"Ekta",
+"Falak",
+"Gauri",
+"Hina",
+"Ishita",
+"Janhvi",
+"Jasmine",
+"Juhi",
+"Kavita",
+"Kavya",
+"Kritika",
+"Lata",
+"Madhuri",
+"Madhu",
+"Mansi",
+"Mayuri",
+"Meera",
+"Minakshi",
+"Mitali",
+"Mohini",
+"Namrata",
+"Neetu",
+"Nidhi",
+"Poonam",
+"Pragya",
+"Priyanka",
+"Radha",
+"Rashika",
+"Renu",
+"Rupali",
+"Sakina",
+"Samiksha",
+"Sanaya",
+"Sejal",
+"Shikha",
+"Shilpa",
+"Shreya",
+"Shruti",
+"Simmi",
+"Suhani",
+"Sunaina",
+"Sunita",
+"Tamanna",
+"Tanisha",
+"Tina",
+"Vaishnavi",
+"Vani",
+"Vartika",
+"Vedika",
+"Vidya",
+"Vijaya",
+"Yashika",
+"Zoya",
+"Aarohi",
+"Aashna",
+"Abha",
+"Akanksha",
+"Akshara",
+"Alka",
+"Amulya",
+"Ananya",
+"Anika",
+"Anita",
+"Archana",
+"Asmita",
+"Avni",
+"Bhavya",
+"Chhavi",
+"Garima",
+"Harini",
+"Harsha",
+"Heena",
+"Indira",
+"Jagruti",
+"Kanchan",
+"Karishma",
+"Lavanya",
+"Leena",
+"Mahima",
+"Malvika",
+"Manya",
+"Mrunal",
+"Naina",
+"Namita",
+"Parul",
+"Rupal",
+"Sana",
+"Saniya",
+"Shivangi",
+"Shivanya",
+"Zainab"
+];
+
+/* =========================================
+   SETTINGS
+========================================= */
+
+const perPage = 5;
+let currentPage = 1;
+
+/*
+   Current names shown on screen.
+   Change Name replaces only that card.
+*/
+let displayedNames = [];
+
+/* =========================================
+   CREATE INITIAL 5 NAMES
+========================================= */
+
+function loadPage() {
+
+    displayedNames = [];
+
+    const start = (currentPage - 1) * perPage;
+
+    for (let i = 0; i < perPage; i++) {
+
+        if (names[start + i]) {
+            displayedNames.push(names[start + i]);
+        }
+
+    }
+
+    renderNames();
+}
+
+/* =========================================
+   DISPLAY NAMES
+========================================= */
+
+function renderNames() {
+
+    const container = document.getElementById("names");
+
+    container.innerHTML = "";
+
+    displayedNames.forEach((name, index) => {
+
+        const card = document.createElement("div");
+
+        card.className = "name-card";
+
+        card.innerHTML = `
+            <div class="name-text">
+                XXL ${escapeHTML(name)}
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="change-btn"
+                    onclick="changeName(${index})">
+                    🔄 CHANGE NAME
+                </button>
+
+                <button
+                    class="copy-btn"
+                    onclick="copyName(${index})">
+                    📋 COPY
+                </button>
+
+            </div>
+        `;
+
+        container.appendChild(card);
+
+    });
+
+    updatePageInfo();
+}
+
+/* =========================================
+   CHANGE NAME
+========================================= */
+
+function changeName(index) {
+
+    let newName;
+
+    do {
+
+        newName =
+            names[Math.floor(Math.random() * names.length)];
+
+    } while (
+        displayedNames.includes(newName) &&
+        names.length > displayedNames.length
+    );
+
+    displayedNames[index] = newName;
+
+    renderNames();
+}
+
+/* =========================================
+   COPY NAME
+========================================= */
+
+function copyName(index) {
+
+    const text = "XXL " + displayedNames[index];
+
+    if (navigator.clipboard) {
+
+        navigator.clipboard.writeText(text)
+        .then(() => {
+            showToast("✅ " + text + " copied!");
+        })
+        .catch(() => {
+            fallbackCopy(text);
+        });
+
+    } else {
+
+        fallbackCopy(text);
+
+    }
+}
+
+/* =========================================
+   FALLBACK COPY
+========================================= */
+
+function fallbackCopy(text) {
+
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+
+    document.body.appendChild(textarea);
+
+    textarea.select();
+
+    try {
+        document.execCommand("copy");
+        showToast("✅ " + text + " copied!");
+    } catch (e) {
+        showToast("❌ Copy failed");
+    }
+
+    document.body.removeChild(textarea);
+}
+
+/* =========================================
+   NEXT PAGE
+========================================= */
+
+function nextPage() {
+
+    const totalPages =
+        Math.ceil(names.length / perPage);
+
+    if (currentPage < totalPages) {
+
+        currentPage++;
+
+        loadPage();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+/* =========================================
+   PREVIOUS PAGE
+========================================= */
+
+function previousPage() {
+
+    if (currentPage > 1) {
+
+        currentPage--;
+
+        loadPage();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+}
+
+/* =========================================
+   PAGE INFO
+========================================= */
+
+function updatePageInfo() {
+
+    const totalPages =
+        Math.ceil(names.length / perPage);
+
+    document.getElementById("pageInfo").innerHTML =
+        "Page " + currentPage + " of " + totalPages +
+        " • " + names.length + " names";
+
+}
+
+/* =========================================
+   TOAST MESSAGE
+========================================= */
+
+let toastTimer;
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 1800);
+}
+
+/* =========================================
+   SECURITY / HTML ESCAPE
+========================================= */
+
+function escapeHTML(text) {
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+/* =========================================
+   START
+========================================= */
+
+loadPage();
+
+</script>
+
+</body>
+</html>
